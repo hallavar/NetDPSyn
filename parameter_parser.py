@@ -17,7 +17,7 @@ def parameter_parser():
     
     ####################################### general parameters ###################################
     # parameters for single run
-    parser.add_argument('--dataset_name', type=str, default="ton",
+    parser.add_argument('--dataset_name', type=str, default="custom",
                         help='options: colorado')
     
     # parameters for workflow control

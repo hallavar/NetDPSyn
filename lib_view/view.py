@@ -13,7 +13,7 @@ class View:
         self.attr_set = set(view_domain.attrs)
         self.attr_names = [dataset_domain.attrs[i] for i in self.attributes_index]
 
-        self.num_key = np.product(self.num_categories[self.attributes_index])
+        self.num_key = np.prod(self.num_categories[self.attributes_index])
         self.num_attributes = self.indicator.shape[0]
         self.ways = np.count_nonzero(self.indicator)
         
@@ -202,7 +202,7 @@ class View:
         
         encode_tuple_key = np.matmul(bigger_view.tuple_key, encode_num)
         
-        self.weights[index] = 1.0 / np.product(
+        self.weights[index] = 1.0 / np.prod(
             self.num_categories[np.setdiff1d(bigger_view.attributes_index, self.attributes_index)])
         self.rhos[index] = bigger_view.rho
 

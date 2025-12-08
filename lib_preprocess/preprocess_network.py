@@ -39,7 +39,7 @@ class PreprocessNetwork:
                 os.makedirs(path)
         
         # Load the Field Types from JSON
-        with open(config_dpsyn.TYPE_CONIFG_PATH, 'r') as file:
+        with open(config_dpsyn.TYPE_CONFIG_PATH, 'r') as file:
             field_config = json.load(file)
             self.field_types = field_config["field_types"]
             self.bin_sizes = field_config["bin_sizes"]
@@ -149,7 +149,7 @@ class PreprocessNetwork:
 
     def save_data(self, pickle_filename, mapping_filename):
         self.logger.info("saving data")
-
+    
         domain = Domain(self.df.columns, self.shape)
         dataset = Dataset(self.df, domain)
 
@@ -279,8 +279,8 @@ class PreprocessNetwork:
         out_path = os.path.join(config_dpsyn.SYNTHESIZED_RECORDS_PATH, csv_filename)
         os.makedirs(os.path.dirname(out_path), exist_ok=True)
 
-        # with open(config_dpsyn.SYNTHESIZED_RECORDS_PATH + csv_filename, 'wb') as file:
-        #     self.df.to_csv(config_dpsyn.SYNTHESIZED_RECORDS_PATH + csv_filename, index=False)
+        with open(config_dpsyn.SYNTHESIZED_RECORDS_PATH + csv_filename, 'wb') as file:
+            self.df.to_csv(config_dpsyn.SYNTHESIZED_RECORDS_PATH + csv_filename, index=False)
 
 def main(args):
     output_file = None
@@ -291,6 +291,7 @@ def main(args):
 
     preprocess = PreprocessNetwork()
     file_prefix = args['dataset_name']
+    print(args)
     preprocess.load_data(file_prefix + '.csv')
     preprocess.build_mapping()
     preprocess.save_data(file_prefix, file_prefix + '_mapping')
