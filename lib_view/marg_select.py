@@ -28,9 +28,14 @@ class MarginalSelection:
             determine_marginal.transform_records_distinct_value()
             determine_marginal.calculate_pair_indif()
 
-        determine_marginal.solve_score_function(self.select_config['dataset_name'], self.select_config['depend_epsilon'], self.select_config['remain_rho'],
-                                                self.select_config['marg_add_sensitivity'], self.select_config['marg_select_sensitivity'],
-                                                self.select_config['noise_add_method'])
+        determine_marginal.solve_score_function(
+            self.select_config['dataset_name'],
+            self.select_config['selection_rho'],
+            self.select_config['publish_rho'],
+            self.select_config['marg_add_sensitivity'],
+            self.select_config['marg_select_sensitivity'],
+            self.select_config['noise_add_method'],
+            self.select_config['delta'])
         marginals = determine_marginal.handle_isolated_attrs(method="connect", sort=True)
 
         return marginals

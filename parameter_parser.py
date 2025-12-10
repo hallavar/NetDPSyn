@@ -27,7 +27,14 @@ def parameter_parser():
     # parameters for privacy
     parser.add_argument('-e', '--epsilon', type=float, default=2.0,
                         help="when run main(), specify epsilon here")
-    parser.add_argument('--depend_epsilon_ratio', type=float, default=0.1)
+    parser.add_argument('--depend_epsilon_ratio', type=float, default=0.1,
+                        help='deprecated: kept for backward compatibility; selection_rho_ratio is used instead')
+    parser.add_argument('--binning_rho_ratio', type=float, default=0.1,
+                        help='fraction of total rho for DP binning (paper default: 0.1)')
+    parser.add_argument('--selection_rho_ratio', type=float, default=0.1,
+                        help='fraction of total rho for marginal selection (paper default: 0.1)')
+    parser.add_argument('--publish_rho_ratio', type=float, default=0.8,
+                        help='fraction of total rho for releasing noisy marginals (paper default: 0.8)')
     parser.add_argument('--marg_add_sensitivity', type=float, default=1.0)
     parser.add_argument('--marg_select_sensitivity', type=float, default=4.0)
     parser.add_argument('--noise_add_method', type=str, default="A3",
@@ -43,10 +50,10 @@ def parameter_parser():
     parser.add_argument('--consist_iterations', type=int, default=501, help='default value is 501')
     
     # parameters for synthesizing
-    parser.add_argument('--initialize_method', type=str, default="singleton",
-                        help='random -> randomized initial dataframe; singleton -> the distribution of each dataframe' 
-                             'attribute matches noisy 1-way marginals; marginal_manual -> initialize the dataframe with mamually picked marginals;'
-                             'marginal_auto -> initialize the dataframe with automatically picked marginals')
+    parser.add_argument('--initialize_method', type=str, default="marginal_auto",
+                        help='random -> randomized initial dataframe; singleton -> the distribution of each dataframe'
+                             'attribute matches noisy 1-way marginals; marginal_manual -> initialize the dataframe with manually picked marginals;'
+                             'marginal_auto -> initialize the dataframe with automatically picked marginals (prefers ones containing the prediction attr)')
     parser.add_argument('--update_method', type=str, default="S5",
                         help='S1 -> all replace; S2 -> all duplicate; S3 -> all half-half;'
                              'S4 -> replace+duplicate; S5 -> half-half+duplicate; S6 -> half-half+replace.'

@@ -82,20 +82,21 @@ class AttrDepend:
         self.dependency_df = dependency_df
         self.logger.info("calculated pair dependency")
 
-    def solve_score_function(self, dataset_name, epsilon, rho, marg_add_sensitivity, marg_select_sensitivity, noise_add_method):
+    def solve_score_function(self, dataset_name, selection_rho, publish_rho, marg_add_sensitivity, marg_select_sensitivity, noise_add_method, delta):
         self.logger.info("choosing marginals")
 
         self.dependency_df = pickle.load(open(config_dpsyn.DEPENDENCY_PATH + self.dataset_name, "rb"))
 
-        if epsilon != 0.0:
-            composition = AdvancedComposition()
-            sigma = composition.gauss_zcdp(epsilon, 1.0 / (self.df.shape[0]), marg_select_sensitivity, self.dependency_df.shape[0])
+        if selection_rho != 0.0:
+            rho_per_pair = selection_rho / max(self.dependency_df.shape[0], 1)
+            sigma = math.sqrt(marg_select_sensitivity ** 2 / (2.0 * rho_per_pair))
             self.dependency_df.error += np.random.normal(scale=sigma / (2.0 * self.df.shape[0]), size=self.dependency_df.shape[0])
 
         gap = 1e10
 
         self.marginals = []
         self.selected_attrs = set()
+        effective_publish_rho = max(publish_rho, 1e-12)
 
         error = self.dependency_df["error"].to_numpy() * self.df.shape[0]
         num_cells = self.dependency_df["num_cells"].to_numpy().astype(np.float64)
@@ -116,10 +117,10 @@ class AttrDepend:
 
                 if noise_add_method == "A3":
                     cells_square_sum = np.sum(np.power(num_cells[list(select_candidate)], 2.0 / 3.0))
-                    gauss_constant = np.sqrt(cells_square_sum / (math.pi * rho))
+                    gauss_constant = np.sqrt(cells_square_sum / (math.pi * effective_publish_rho))
                     gauss_error = np.sum(gauss_constant * np.power(num_cells[list(select_candidate)], 2.0 / 3.0))
                 elif noise_add_method == "A1" or noise_add_method == "A2":
-                    gauss_constant = np.sqrt((marg_add_sensitivity ** 2 * len(select_candidate)) / (2.0 * rho))
+                    gauss_constant = np.sqrt((marg_add_sensitivity ** 2 * len(select_candidate)) / (2.0 * effective_publish_rho))
                     gauss_error = np.sum(gauss_constant * num_cells[list(select_candidate)])
                 else:
                     raise Exception("invalid noise add method")

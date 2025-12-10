@@ -71,7 +71,8 @@ class PreprocessNetwork:
     def bin_exponential(self, value, base):
         if value <= 0:
             return 0
-        return int(np.ceil(np.log(value) / np.log(base)))
+        # log(1+x) binning as described in the paper
+        return int(np.ceil(np.log1p(value) / np.log(base)))
 
     def print_bin_stats(self, column):
         self.logger.info(f"Encoded Column: {column}")
