@@ -1,5 +1,7 @@
 # path related constant
-PROJECT_PATH = "/home/hallavar/Programs/benchmark_programs/NetDPSyn/"
+from pathlib import Path
+
+PROJECT_PATH = str(Path(__file__).resolve().parent) + "/"
 RAW_DATA_PATH = PROJECT_PATH + "lib_preprocess/temp_data/raw_data/"
 PROCESSED_DATA_PATH = PROJECT_PATH + "lib_preprocess/temp_data/processed_data/"
 SYNTHESIZED_RECORDS_PATH = PROJECT_PATH + "lib_preprocess/temp_data/synthesized_records/"
